@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environment
+venv/
+.env
+.venv/
+
+# macOS files
+.DS_Store
+
+# VSCode settings
+.vscode/
+
+# Python package files
+*.egg-info/
+*.egg
+dist/
+build/
+
+# Logs and local data
+*.log
+
+# IDEs
+.idea/
+
+# FAISS index files (if generated later)
+*.faiss
+
+# Uploads/documents or generated data
+app/resources/documents/*
+
+# Jupyter Notebook checkpoints (if you add notebooks)
+.ip
