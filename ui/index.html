@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Interview Simulator</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f8;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background-color: #4f46e5;
+      color: white;
+      padding: 1rem;
+      font-size: 1.5rem;
+      text-align: center;
+    }
+
+    #chat-container {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .message {
+      max-width: 70%;
+      padding: 0.8rem;
+      margin-bottom: 0.5rem;
+      border-radius: 12px;
+    }
+
+    .user {
+      align-self: flex-end;
+      background-color: #d1d5db;
+    }
+
+    .bot {
+      align-self: flex-start;
+      background-color: #e0e7ff;
+    }
+
+    #input-area {
+      display: flex;
+      padding: 1rem;
+      border-top: 1px solid #ddd;
+      gap: 0.5rem;
+    }
+
+    #input-area input {
+      flex: 1;
+      padding: 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    #input-area button {
+      padding: 0.8rem 1.2rem;
+      background-color: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>AI Interview Simulator</header>
+
+  <div id="chat-container">
+    <div class="message bot">Hi! Upload your resume and job description to begin.</div>
+  </div>
+
+  <div id="input-area">
+    <input type="file" id="resume" />
+    <input type="file" id="jobdesc" />
+    <button onclick="startInterview()">Start</button>
+  </div>
+
+  <script>
+    const chat = document.getElementById("chat-container");
+
+    function addMessage(text, sender) {
+      const msg = document.createElement("div");
+      msg.classList.add("message", sender);
+      msg.textContent = text;
+      chat.appendChild(msg);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    async function startInterview() {
+      const resume = document.getElementById("resume").files[0];
+      const jobdesc = document.getElementById("jobdesc").files[0];
+
+      if (!resume || !jobdesc) {
+        alert("Please upload both resume and job description");
+        return;
+      }
+
+      addMessage("Starting interview...", "user");
+
+      const formData = new FormData();
+      formData.append("resume", resume);
+      formData.append("jobdesc", jobdesc);
+
+      const res = await fetch("http://localhost:8000/interview", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await res.json();
+      const questions = data.interview_round.split("\n").filter(Boolean);
+
+      questions.forEach(q => addMessage(q, "bot"));
+    }
+  </script>
+</body>
+</html>
